@@ -1,18 +1,26 @@
 
+def tc_to_frame(hh, mm, ss, ff, frame_rate):
+    return ff + (ss + mm*60 + hh*3600) * frame_rate
 
-framerate = 24
 
-def timecode_to_frames(timecode):
-    return sum(f * int(t) for f,t in zip((3600*framerate, 60*framerate, framerate, 1), timecode.split(':')))
+def frame_to_tc(fn, framerate):
+    ff = fn % framerate
+    s = fn // framerate
+    return (s // 3600, s // 60 % 60, s % 60, ff)
 
-print (timecode_to_frames('15:41:08:02') - timecode_to_frames('15:41:07:00'))
-# returns 26
+def frame_to_tc_02(fn, framerate):
+    ff = fn % framerate
+    s = fn // framerate
+    return f"{int(s // 3600)}:{int(s // 60 % 60)}:{int(s % 60)}:{int(ff)}"
 
-def frames_to_timecode(frames):
-    return '{0:02d}:{1:02d}:{2:02d}:{3:02d}'.format(frames / (3600*framerate),
-                                                    frames / (60*framerate) % 60,
-                                                    frames / framerate % 60,
-                                                    frames % framerate)
 
-print (frames_to_timecode(26))
-# returns "00:00:01:02"
+def tc_split(timecode):
+    a = timecode.split(':')
+    if len(a) < 4:
+        return False
+    return int(a[0]), int(a[1]),int(a[2]),int(a[3])
+
+if __name__ == '__main__':
+   print(frame_to_tc(2462, 24))
+   print(tc_to_frame(hh =0,mm=0,ss=1,ff=0,frame_rate=24))
+
